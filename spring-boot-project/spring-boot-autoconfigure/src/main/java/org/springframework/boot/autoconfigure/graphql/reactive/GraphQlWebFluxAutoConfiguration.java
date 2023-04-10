@@ -104,30 +104,37 @@ public class GraphQlWebFluxAutoConfiguration {
 			ObjectProvider<WebGraphQlInterceptor> interceptors) {
 		return WebGraphQlHandler.builder(service).interceptors(interceptors.orderedStream().toList()).build();
 	}
+	
+@Bean
+@Order(0)
+public RouterFunction<ServerResponse> graphQlRouterFunction(GraphQlHttpHandler httpHandler, GraphQlSource graphQlSource,GraphQlProperties properties) {
+    String path = properties.getPath();
+    logger.info(LogMessage.format("GraphQL endpoint HTTP POST %s", path));
+	RouterFunctions.Builder builder = RouterFunctions.route()
+            .GET(path, this::onlyAllowPost)
+            .POST(path, SUPPORTS_MEDIATYPES, httpHandler::handleRequest);
 
-	@Bean
-	@Order(0)
-	public RouterFunction<ServerResponse> graphQlRouterFunction(GraphQlHttpHandler httpHandler,
-			GraphQlSource graphQlSource, GraphQlProperties properties) {
-		String path = properties.getPath();
-		logger.info(LogMessage.format("GraphQL endpoint HTTP POST %s", path));
-		RouterFunctions.Builder builder = RouterFunctions.route();
-		builder = builder.GET(path, this::onlyAllowPost);
-		builder = builder.POST(path, SUPPORTS_MEDIATYPES, httpHandler::handleRequest);
-		if (properties.getGraphiql().isEnabled()) {
-			GraphiQlHandler graphQlHandler = new GraphiQlHandler(path, properties.getWebsocket().getPath());
-			builder = builder.GET(properties.getGraphiql().getPath(), graphQlHandler::handleRequest);
-		}
-		if (properties.getSchema().getPrinter().isEnabled()) {
-			SchemaHandler schemaHandler = new SchemaHandler(graphQlSource);
-			builder = builder.GET(path + "/schema", schemaHandler::handleRequest);
-		}
-		return builder.build();
-	}
+    if (properties.getGraphiql().isEnabled()) {
+        addGraphiqlHandler(builder, path, properties.getWebsocket().getPath());
+    }
 
-	private Mono<ServerResponse> onlyAllowPost(ServerRequest request) {
-		return ServerResponse.status(HttpStatus.METHOD_NOT_ALLOWED).headers(this::onlyAllowPost).build();
-	}
+    if (properties.getSchema().getPrinter().isEnabled()) {
+        addSchemaHandler(builder, path, graphQlSource);
+    }
+
+    return builder.build();
+}
+
+private void addGraphiqlHandler(RouterFunctions.Builder builder, String path, String websocketPath) {
+    GraphiQlHandler graphiqlHandler = new GraphiQlHandler(path, websocketPath);
+    builder.GET(properties.getGraphiql().getPath(), graphiqlHandler::handleRequest);
+}
+
+private void addSchemaHandler(RouterFunctions.Builder builder, String path, GraphQlSource graphQlSource) {
+    SchemaHandler schemaHandler = new SchemaHandler(graphQlSource);
+    builder.GET(path + "/schema", schemaHandler::handleRequest);
+}
+
 
 	private void onlyAllowPost(HttpHeaders headers) {
 		headers.setAllow(Collections.singleton(HttpMethod.POST));
