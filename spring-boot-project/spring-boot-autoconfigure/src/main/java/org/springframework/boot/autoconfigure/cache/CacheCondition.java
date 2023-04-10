@@ -46,13 +46,13 @@ class CacheCondition extends SpringBootCondition {
 		ConditionMessage.Builder message = ConditionMessage.forCondition("Cache", sourceClass);
 		Environment environment = context.getEnvironment();
 		try {
-			BindResult<CacheType> specified = Binder.get(environment).bind("spring.cache.type", CacheType.class);
-			if (!specified.isBound()) {
+			BindResult<CacheType> cacheTypeResult = Binder.get(environment).bind("spring.cache.type", CacheType.class);
+			if (!cacheTyperesult.isBound()) {
 				return ConditionOutcome.match(message.because("automatic cache type"));
 			}
 			CacheType required = CacheConfigurations.getType(((AnnotationMetadata) metadata).getClassName());
-			if (specified.get() == required) {
-				return ConditionOutcome.match(message.because(specified.get() + " cache type"));
+			if (cacheTyperesult.get() == required) {
+				return ConditionOutcome.match(message.because(cacheTypeResult.get() + " cache type"));
 			}
 		}
 		catch (BindException ex) {
