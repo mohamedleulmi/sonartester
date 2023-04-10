@@ -154,11 +154,7 @@ public class ServerProperties {
 		this.serverHeader = serverHeader;
 	}
 
-	@Deprecated(since = "3.0.0", forRemoval = true)
-	@DeprecatedConfigurationProperty
-	public DataSize getMaxHttpHeaderSize() {
-		return getMaxHttpRequestHeaderSize();
-	}
+	
 
 	@Deprecated(since = "3.0.0", forRemoval = true)
 	public void setMaxHttpHeaderSize(DataSize maxHttpHeaderSize) {
