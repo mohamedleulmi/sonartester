@@ -48,11 +48,11 @@ import org.springframework.util.StringUtils;
  * @author Oliver Gierke
  * @since 1.0.0
  */
-public abstract class AutoConfigurationPackages {
+public abstract class AutoConfigurationPackagePathResolver {
 
-	private static final Log logger = LogFactory.getLog(AutoConfigurationPackages.class);
+	private static final Log logger = LogFactory.getLog(AutoConfigurationPackagePathResolver.class);
 
-	private static final String BEAN = AutoConfigurationPackages.class.getName();
+	private static final String BEAN = AutoConfigurationPackagePathResolver.class.getName();
 
 	/**
 	 * Determine if the auto-configuration base packages for the given bean factory are
