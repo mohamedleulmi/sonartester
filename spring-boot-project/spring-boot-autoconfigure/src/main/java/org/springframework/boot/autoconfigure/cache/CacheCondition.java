@@ -36,6 +36,9 @@ import org.springframework.core.type.ClassMetadata;
  * @author Madhura Bhave
  */
 class CacheCondition extends SpringBootCondition {
+	
+	private static final String CACHE_TYPE_PROPERTY = "spring.cache.type";
+    private static final String CACHE_CONDITION = "Cache";
 
 	@Override
 	public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
@@ -43,10 +46,10 @@ class CacheCondition extends SpringBootCondition {
 		if (metadata instanceof ClassMetadata classMetadata) {
 			sourceClass = classMetadata.getClassName();
 		}
-		ConditionMessage.Builder message = ConditionMessage.forCondition("Cache", sourceClass);
+		ConditionMessage.Builder message = ConditionMessage.forCondition(CACHE_CONDITION, sourceClass);
 		Environment environment = context.getEnvironment();
 		try {
-			BindResult<CacheType> cacheTypeResult = Binder.get(environment).bind("spring.cache.type", CacheType.class);
+			BindResult<CacheType> cacheTypeResult = Binder.get(environment).bind(CACHE_TYPE_PROPERTY, CacheType.class);
 			if (!cacheTyperesult.isBound()) {
 				return ConditionOutcome.match(message.because("automatic cache type"));
 			}
