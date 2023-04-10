@@ -95,5 +95,13 @@ class JerseyAutoConfigurationCustomFilterPathTests {
 	protected @interface MinimalWebConfiguration {
 
 	}
+	
+	@Test
+	void testCustomMessage() {
+    	ResponseEntity<String> responseEntity = restTemplate.getForEntity("/rest/hello?message=Custom", String.class);
+   		assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    	assertThat(responseEntity.getBody()).isEqualTo("Hello Custom");
+	}
+
 
 }
