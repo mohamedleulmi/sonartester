@@ -368,15 +368,6 @@ public class FlywayAutoConfiguration {
 			super(ConfigurationPhase.REGISTER_BEAN);
 		}
 
-		@ConditionalOnBean(DataSource.class)
-		private static final class DataSourceBeanCondition {
-
-		}
-
-		@ConditionalOnProperty(prefix = "spring.flyway", name = "url")
-		private static final class FlywayUrlCondition {
-
-		}
 
 	}
 
