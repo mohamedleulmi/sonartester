@@ -33,6 +33,7 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.core.Ordered;
 import org.springframework.util.StringUtils;
 
+
 /**
  * Abstract base class for a {@link BeanFactoryPostProcessor} that can be used to
  * dynamically declare that all beans of a specific type should depend on specific other
@@ -53,6 +54,8 @@ public abstract class AbstractDependsOnBeanFactoryPostProcessor implements BeanF
 	private final Class<? extends FactoryBean<?>> factoryBeanClass;
 
 	private final Function<ListableBeanFactory, Set<String>> dependsOn;
+	
+	private static final int ORDER = 0;
 
 	/**
 	 * Create an instance with target bean, factory bean classes, and dependency names.
@@ -78,7 +81,7 @@ public abstract class AbstractDependsOnBeanFactoryPostProcessor implements BeanF
 			Class<? extends FactoryBean<?>> factoryBeanClass, Class<?>... dependencyTypes) {
 		this.beanClass = beanClass;
 		this.factoryBeanClass = factoryBeanClass;
-		this.dependsOn = (beanFactory) -> Arrays.stream(dependencyTypes)
+		this.dependsOn = beanFactory -> Arrays.stream(dependencyTypes)
 			.flatMap((dependencyType) -> getBeanNames(beanFactory, dependencyType).stream())
 			.collect(Collectors.toSet());
 	}
@@ -117,7 +120,7 @@ public abstract class AbstractDependsOnBeanFactoryPostProcessor implements BeanF
 
 	@Override
 	public int getOrder() {
-		return 0;
+		return ORDER;
 	}
 
 	private Set<String> getBeanNames(ListableBeanFactory beanFactory) {
