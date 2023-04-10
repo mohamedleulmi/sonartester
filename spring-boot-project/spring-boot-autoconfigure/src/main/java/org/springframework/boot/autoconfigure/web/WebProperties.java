@@ -114,14 +114,24 @@ public class WebProperties {
 			this.customized = true;
 		}
 
+		
+		
 		private String[] appendSlashIfNecessary(String[] staticLocations) {
-			String[] normalized = new String[staticLocations.length];
-			for (int i = 0; i < staticLocations.length; i++) {
-				String location = staticLocations[i];
-				normalized[i] = location.endsWith("/") ? location : location + "/";
-			}
-			return normalized;
-		}
+   			 String[] normalized = new String[staticLocations.length];
+    		for (int i = 0; i < staticLocations.length; i++) {
+        		String location = staticLocations[i];
+        		normalized[i] = addSlashIfNecessary(location);
+   			 }
+   			 return normalized;
+}
+
+private String addSlashIfNecessary(String location) {
+    if (location.endsWith("/")) {
+        return location;
+    } else {
+        return location + "/";
+    }
+}
 
 		public boolean isAddMappings() {
 			return this.addMappings;
