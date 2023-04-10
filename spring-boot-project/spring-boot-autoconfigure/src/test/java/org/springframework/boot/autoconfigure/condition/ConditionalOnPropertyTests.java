@@ -72,13 +72,13 @@ class ConditionalOnPropertyTests {
 	}
 
 	@Test
-	void propertyValueEqualsFalse() {
+	void shouldNotCreateFooBeanWhenProperty1ValueIsFalse() {
 		load(MultiplePropertiesRequiredConfiguration.class, "property1=false", "property2=value2");
 		assertThat(this.context.containsBean("foo")).isFalse();
 	}
 
 	@Test
-	void propertyValueEqualsFALSE() {
+	void shouldNotCreateFooBeanWhenProperty1ValueIsUpperCaseFalse()() {
 		load(MultiplePropertiesRequiredConfiguration.class, "property1=FALSE", "property2=value2");
 		assertThat(this.context.containsBean("foo")).isFalse();
 	}
