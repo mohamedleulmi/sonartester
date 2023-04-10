@@ -67,7 +67,7 @@ public abstract class AbstractDependsOnBeanFactoryPostProcessor implements BeanF
 			Class<? extends FactoryBean<?>> factoryBeanClass, String... dependsOn) {
 		this.beanClass = beanClass;
 		this.factoryBeanClass = factoryBeanClass;
-		this.dependsOn = (beanFactory) -> new HashSet<>(Arrays.asList(dependsOn));
+		this.dependsOn = beanFactory -> new HashSet<>(Arrays.asList(dependsOn));
 	}
 
 	/**
@@ -82,7 +82,7 @@ public abstract class AbstractDependsOnBeanFactoryPostProcessor implements BeanF
 		this.beanClass = beanClass;
 		this.factoryBeanClass = factoryBeanClass;
 		this.dependsOn = beanFactory -> Arrays.stream(dependencyTypes)
-			.flatMap((dependencyType) -> getBeanNames(beanFactory, dependencyType).stream())
+			.flatMap(dependencyType -> getBeanNames(beanFactory, dependencyType).stream())
 			.collect(Collectors.toSet());
 	}
 
