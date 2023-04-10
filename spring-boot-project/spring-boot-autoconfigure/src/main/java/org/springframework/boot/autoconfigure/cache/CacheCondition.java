@@ -42,10 +42,7 @@ class CacheCondition extends SpringBootCondition {
 
 	@Override
 	public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
-		String sourceClass = "";
-		if (metadata instanceof ClassMetadata classMetadata) {
-			sourceClass = classMetadata.getClassName();
-		}
+		String sourceClass = getSourceClass(metadata);
 		ConditionMessage.Builder message = ConditionMessage.forCondition(CACHE_CONDITION, sourceClass);
 		Environment environment = context.getEnvironment();
 		try {
@@ -62,5 +59,13 @@ class CacheCondition extends SpringBootCondition {
 		}
 		return ConditionOutcome.noMatch(message.because("unknown cache type"));
 	}
+	
+	private String getSourceClass(AnnotatedTypeMetadata metadata) {
+        if (metadata instanceof ClassMetadata classMetadata) {
+            return classMetadata.getClassName();
+        }
+        return "";
+    }
+	
 
 }
