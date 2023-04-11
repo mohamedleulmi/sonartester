@@ -1,0 +1,32 @@
+static class JacksonAutoConfigurationRuntimeHints implements RuntimeHintsRegistrar {
+
+		@Override
+		public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
+			if (ClassUtils.isPresent("com.fasterxml.jackson.databind.PropertyNamingStrategy", classLoader)) {
+				registerPropertyNamingStrategyHints(hints.reflection());
+			}
+		}
+
+		/**
+		 * Register hints for the {@code configurePropertyNamingStrategyField} method to
+		 * use.
+		 * @param hints reflection hints
+		 */
+		private void registerPropertyNamingStrategyHints(ReflectionHints hints) {
+			registerPropertyNamingStrategyHints(hints, PropertyNamingStrategies.class);
+		}
+
+		private void registerPropertyNamingStrategyHints(ReflectionHints hints, Class<?> type) {
+			Stream.of(type.getDeclaredFields())
+				.filter(this::isPropertyNamingStrategyField)
+				.forEach(hints::registerField);
+		}
+
+		private boolean isPropertyNamingStrategyField(Field candidate) {
+			return ReflectionUtils.isPublicStaticFinal(candidate)
+					&& candidate.getType().isAssignableFrom(PropertyNamingStrategy.class);
+		}
+
+	}
+
+}
