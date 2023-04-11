@@ -145,29 +145,7 @@ public class JacksonAutoConfiguration {
 
 	}
 
-	@Configuration(proxyBeanMethods = false)
-	@ConditionalOnClass(Jackson2ObjectMapperBuilder.class)
-	static class JacksonObjectMapperBuilderConfiguration {
-
-		@Bean
-		@Scope("prototype")
-		@ConditionalOnMissingBean
-		Jackson2ObjectMapperBuilder jacksonObjectMapperBuilder(ApplicationContext applicationContext,
-				List<Jackson2ObjectMapperBuilderCustomizer> customizers) {
-			Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
-			builder.applicationContext(applicationContext);
-			customize(builder, customizers);
-			return builder;
-		}
-
-		private void customize(Jackson2ObjectMapperBuilder builder,
-				List<Jackson2ObjectMapperBuilderCustomizer> customizers) {
-			for (Jackson2ObjectMapperBuilderCustomizer customizer : customizers) {
-				customizer.customize(builder);
-			}
-		}
-
-	}
+	
 
 	
 
